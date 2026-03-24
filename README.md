@@ -1,4 +1,4 @@
-Documentação Técnica: Projeto Clone Moodle (LMS)
+Projeto Moodle LMS
 
 Este documento detalha a análise completa para o desenvolvimento de um sistema de gestão de aprendizagem (Learning Management System), focado em usabilidade, performance e escalabilidade.
 
@@ -148,7 +148,7 @@ RNF04
 
 Escalabilidade
 
-Arquitetura preparada para suportar múltiplos acessos simultâneos (Stateless).
+Arquitetura preparada para suportar múltiplos acessos simultâneos.
 
 4. Modelo de Dados (Arquitetura)
 
@@ -214,7 +214,7 @@ sequenceDiagram
 
 RN01 - Acesso Restrito: O conteúdo das aulas só é visível para usuários com uma matrícula (Enrollment) ativa para aquele curso específico.
 
-RN02 - Integridade do Progresso: Uma aula marcada como "Concluída" não deve retornar ao estado inicial automaticamente, a menos que o aluno opte por reiniciar o progresso (se permitido).
+RN02 - Integridade do Progresso: Uma aula marcada como "Concluída" não deve retornar ao estado inicial automaticamente, a menos que o aluno opte por reiniciar o progresso.
 
 RN03 - Certificação: O certificado de conclusão só é emitido se o campo progresso_percentual da matrícula for igual a 100.
 
@@ -222,24 +222,32 @@ RN04 - Permissões de Edição: Apenas o autor original do curso (Professor) ou 
 
 7. Mapa do Site (Navegação)
 
-Público: * Home (Lançamentos e Destaques)
+Público
 
-Catálogo de Cursos (Busca e Categorias)
+Home: Lançamentos e Destaques.
 
-Páginas de Login/Registro
+Catálogo de Cursos: Busca e Categorias.
 
-Área do Aluno: * Dashboard (Meus Cursos em andamento)
+Páginas de Login/Registro.
 
-Sala de Aula Virtual (Player de vídeo e materiais)
+Área do Aluno
 
-Página de Certificados
+Dashboard: Meus Cursos em andamento.
 
-Área do Professor: * Painel de Instrutor (Estatísticas de vendas/alunos)
+Sala de Aula Virtual: Player de vídeo e materiais didáticos.
 
-Gerenciador de Cursos (Criação de módulos e aulas)
+Página de Certificados.
 
-Relatórios de Desempenho
+Área do Professor
 
-Painel Administrativo: * Gestão de Usuários (Banir/Promover)
+Painel de Instrutor: Estatísticas de vendas/alunos.
 
-Configurações Gerais de Sistema e Branding
+Gerenciador de Cursos: Criação de módulos e aulas.
+
+Relatórios de Desempenho.
+
+Painel Administrativo
+
+Gestão de Usuários: Banir, promover ou editar perfis.
+
+Configurações Gerais: Sistema e Branding.
