@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Projeto: Moodle LMS Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf9f8;
+            color: #1e293b;
+        }
+
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 400px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px; 
+        } 
+        @media (min-width: 768px) { 
+            .chart-container { 
+                height: 350px; 
+            } 
+        }
+
+        .step-active {
+            border-left-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        
+        .entity-card:hover .entity-fields {
+            max-height: 500px;
+            opacity: 1;
+            padding-top: 1rem;
+        }
+        
+        .entity-fields {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen">
+
+<!-- Chosen Palette: Warm Neutral & Deep Slate. Background: #faf9f8 (Warm Off-white). Cards: White. Primary Accent: #2563eb (Blue-600). Secondary Accents: #10b981 (Emerald), #f59e0b (Amber), #f43f5e (Rose). Text: #1e293b (Slate-800). -->
+<!-- Application Structure Plan: The SPA is structured as a "Project Architecture Dashboard" to facilitate the understanding of the tech specs by developers and stakeholders. It moves away from a linear document to a faceted exploration tool. The Hero section establishes context. The "Stakeholders & Audience" uses interactive cards to define user roles. The core feature is the "Requirements Analysis" section, featuring an interactive Donut chart mapping requirement priorities, which dynamically filters the adjacent requirement list when clicked. The "System Architecture" and "Flows" sections replace static Mermaid diagrams with interactive HTML/CSS hover-cards and step-by-step progress components, ensuring deep understanding of the system's logic without cluttering the screen. -->
+<!-- Visualization & Content Choices: 
+1. Objectives/Audience -> Goal: Inform -> Method: Grid layout with Unicode icons -> Justification: Quick, scannable context setting -> Library/Method: HTML/Tailwind.
+2. Requirements -> Goal: Organize/Filter -> Method: Interactive Donut Chart + Dynamic List -> Interaction: Click chart segment to filter list by priority -> Justification: Makes a boring table explorable and shows development focus -> Library/Method: Chart.js + Vanilla JS.
+3. Architecture/Entities -> Goal: Relationships -> Method: Expandable CSS Cards -> Interaction: Hover to reveal database fields -> Justification: Keeps UI clean while providing technical depth on demand -> Library/Method: HTML/CSS.
+4. User Flows -> Goal: Process -> Method: Interactive Step Timeline -> Interaction: Click steps to view logic -> Justification: Replaces static Mermaid charts with an engaging, readable sequence -> Library/Method: HTML/JS. 
+Confirming NO SVG/Mermaid used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <header class="mb-12 text-center">
+        <div class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold mb-4 tracking-wide uppercase">
+            Especificação Técnica
+        </div>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight sm:text-5xl mb-4">
+            Projeto Clone Moodle LMS
+        </h1>
+        <p class="mt-4 max-w-2xl text-xl text-slate-600 mx-auto">
+            Plataforma centralizada para cursos online e treinamentos corporativos. Focada em usabilidade, performance e acompanhamento detalhado de progresso.
+        </p>
+    </header>
+
+    <section class="mb-16">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-800">1. Perfis e Público-Alvo</h2>
+            <p class="text-slate-600 mt-2">Esta secção define quem utilizará o sistema e os seus respetivos papéis e permissões dentro da plataforma modular. Clique ou explore os cartões para compreender o foco de cada utilizador.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                <div class="text-4xl mb-4">&#128187;</div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Administrador</h3>
+                <p class="text-sm text-slate-600">Gestão global do sistema, criação de categorias de cursos e controlo total de utilizadores (banir, promover, editar perfis).</p>
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Foco:</span>
+                    <span class="text-sm text-slate-700 ml-2">Gestores de RH, TI Interno</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                <div class="text-4xl mb-4">&#127891;</div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Professor / Instrutor</h3>
+                <p class="text-sm text-slate-600">Gestão de conteúdos didáticos, criação de cursos, acompanhamento de notas, estatísticas e monitorização do desempenho de alunos.</p>
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Foco:</span>
+                    <span class="text-sm text-slate-700 ml-2">Escolas, Autônomos</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                <div class="text-4xl mb-4">&#128100;</div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Aluno</h3>
+                <p class="text-sm text-slate-600">Inscrição em cursos, consumo de vídeos e materiais em PDF, realização de questionários e obtenção automática de certificados.</p>
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Foco:</span>
+                    <span class="text-sm text-slate-700 ml-2">Colaboradores, Estudantes</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-16 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-8 border-b border-slate-200 bg-slate-50">
+            <h2 class="text-2xl font-bold text-slate-800">2. Análise de Requisitos e Prioridades</h2>
+            <p class="text-slate-600 mt-2">Nesta área encontra os requisitos técnicos (Funcionais e Não Funcionais). O gráfico apresenta a distribuição de tarefas por prioridade para o desenvolvimento. <strong>Clique nos segmentos do gráfico para filtrar a lista de requisitos.</strong></p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="p-8 border-r border-slate-200 flex flex-col items-center justify-center bg-white">
+                <div class="w-full flex justify-between items-center mb-6">
+                    <h3 class="font-semibold text-slate-700">Distribuição de Prioridades</h3>
+                    <button id="resetFilterBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded hidden transition-colors">Ver Todos</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="requirementsChart"></canvas>
+                </div>
+                <p id="chartHelpText" class="text-sm text-slate-500 mt-6 text-center italic">Clique numa secção do gráfico para filtrar a lista ao lado.</p>
+            </div>
+            
+            <div class="p-0 bg-white">
+                <div class="px-8 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-semibold text-slate-700">Lista de Requisitos</h3>
+                    <span id="reqCount" class="text-sm font-medium text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full"></span>
+                </div>
+                <div class="h-[450px] overflow-y-auto custom-scrollbar p-6" id="requirementsList">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-16">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-800">3. Modelo de Dados e Arquitetura</h2>
+            <p class="text-slate-600 mt-2">Explore as entidades principais do sistema e os seus atributos cruciais para a base de dados relacional. <strong>Passe o rato por cima (hover) sobre cada tabela para visualizar os seus campos.</strong></p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            
+            <div class="entity-card bg-white rounded-lg shadow border-t-4 border-blue-500 p-5 cursor-default relative z-10 hover:z-20">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-slate-800">User</h3>
+                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Tabela</span>
+                </div>
+                <p class="text-xs text-slate-500">Utilizadores do sistema.</p>
+                <div class="entity-fields">
+                    <ul class="text-sm text-slate-700 space-y-2 border-t border-slate-100 pt-2">
+                        <li><span class="font-mono text-blue-600">id</span> (PK)</li>
+                        <li><span class="font-mono">nome</span></li>
+                        <li><span class="font-mono">email</span></li>
+                        <li><span class="font-mono">password_hash</span></li>
+                        <li><span class="font-mono">role</span></li>
+                        <li><span class="font-mono">data_registo</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="entity-card bg-white rounded-lg shadow border-t-4 border-emerald-500 p-5 cursor-default relative z-10 hover:z-20">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-slate-800">Course</h3>
+                    <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">Tabela</span>
+                </div>
+                <p class="text-xs text-slate-500">Cursos ofertados.</p>
+                <div class="entity-fields">
+                    <ul class="text-sm text-slate-700 space-y-2 border-t border-slate-100 pt-2">
+                        <li><span class="font-mono text-emerald-600">id</span> (PK)</li>
+                        <li><span class="font-mono">titulo</span></li>
+                        <li><span class="font-mono">descricao</span></li>
+                        <li><span class="font-mono">capa_url</span></li>
+                        <li><span class="font-mono text-emerald-600">professor_id</span> (FK)</li>
+                        <li><span class="font-mono text-emerald-600">categoria_id</span> (FK)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="entity-card bg-white rounded-lg shadow border-t-4 border-amber-500 p-5 cursor-default relative z-10 hover:z-20">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-slate-800">Module</h3>
+                    <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Tabela</span>
+                </div>
+                <p class="text-xs text-slate-500">Módulos dos cursos.</p>
+                <div class="entity-fields">
+                    <ul class="text-sm text-slate-700 space-y-2 border-t border-slate-100 pt-2">
+                        <li><span class="font-mono text-amber-600">id</span> (PK)</li>
+                        <li><span class="font-mono text-amber-600">curso_id</span> (FK)</li>
+                        <li><span class="font-mono">titulo</span></li>
+                        <li><span class="font-mono">ordem</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="entity-card bg-white rounded-lg shadow border-t-4 border-purple-500 p-5 cursor-default relative z-10 hover:z-20">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-slate-800">Lesson</h3>
+                    <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Tabela</span>
+                </div>
+                <p class="text-xs text-slate-500">Aulas e conteúdos.</p>
+                <div class="entity-fields">
+                    <ul class="text-sm text-slate-700 space-y-2 border-t border-slate-100 pt-2">
+                        <li><span class="font-mono text-purple-600">id</span> (PK)</li>
+                        <li><span class="font-mono text-purple-600">modulo_id</span> (FK)</li>
+                        <li><span class="font-mono">titulo</span></li>
+                        <li><span class="font-mono">conteudo</span></li>
+                        <li><span class="font-mono">tipo</span></li>
+                        <li><span class="font-mono">url_media</span></li>
+                        <li><span class="font-mono">ordem</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="entity-card bg-white rounded-lg shadow border-t-4 border-rose-500 p-5 cursor-default relative z-10 hover:z-20">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-slate-800">Enrollment</h3>
+                    <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded">Tabela</span>
+                </div>
+                <p class="text-xs text-slate-500">Vínculo aluno-curso.</p>
+                <div class="entity-fields">
+                    <ul class="text-sm text-slate-700 space-y-2 border-t border-slate-100 pt-2">
+                        <li><span class="font-mono text-rose-600">id</span> (PK)</li>
+                        <li><span class="font-mono text-rose-600">aluno_id</span> (FK)</li>
+                        <li><span class="font-mono text-rose-600">curso_id</span> (FK)</li>
+                        <li><span class="font-mono">progresso_percentual</span></li>
+                        <li><span class="font-mono">data_inicio</span></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="mb-16">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-800">4. Fluxos Operacionais & Regras de Negócio</h2>
+            <p class="text-slate-600 mt-2">Acompanhe a lógica de negócio passo a passo. Selecione um dos fluxos para visualizar a jornada interativa baseada nas especificações da plataforma.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="flex border-b border-slate-200">
+                <button id="tab-prof" class="flex-1 py-4 text-center font-medium text-blue-600 border-b-2 border-blue-600 bg-blue-50/30 transition-colors">Visão Professor: Criação de Conteúdo</button>
+                <button id="tab-aluno" class="flex-1 py-4 text-center font-medium text-slate-500 border-b-2 border-transparent hover:text-slate-700 hover:bg-slate-50 transition-colors">Visão Aluno: Experiência & Progresso</button>
+            </div>
+            
+            <div class="p-8">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="w-full md:w-1/3 border-l-2 border-slate-100" id="flowStepsContainer">
+                    </div>
+                    
+                    <div class="w-full md:w-2/3">
+                        <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 h-full flex flex-col justify-center min-h-[300px]" id="flowDetailContainer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800 text-white p-6 mt-4">
+                <h4 class="text-sm font-bold uppercase tracking-wide text-slate-400 mb-4">Regras de Negócio Aplicáveis</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="businessRulesContainer">
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const requirementsData = [
+        { id: 'RF01', type: 'RF', title: 'Autenticação', desc: 'Sistema de Login, Registro e Recuperação de Senha com perfis distintos.', priority: 'Alta' },
+        { id: 'RF02', type: 'RF', title: 'Gestão de Cursos', desc: 'Interface para o professor criar, editar e apagar cursos e categorias.', priority: 'Alta' },
+        { id: 'RF03', type: 'RF', title: 'Estrutura Modular', desc: 'Organização do curso dividida em Módulos e Lições (Aulas).', priority: 'Alta' },
+        { id: 'RF04', type: 'RF', title: 'Formatos de Aula', desc: 'Suporte para Vídeo (Embed), Documentos (PDF) e Texto (Markdown).', priority: 'Alta' },
+        { id: 'RF05', type: 'RF', title: 'Matrículas', desc: 'Inscrição de alunos em cursos (Gratuitos, Pagos ou via Chave).', priority: 'Alta' },
+        { id: 'RF06', type: 'RF', title: 'Controle de Progresso', desc: 'Marcação automática de aula assistida e progresso percentual.', priority: 'Média' },
+        { id: 'RF07', type: 'RF', title: 'Avaliações', desc: 'Criação de Quizzes (Questionários) com correção e nota automática.', priority: 'Média' },
+        { id: 'RF08', type: 'RF', title: 'Certificação', desc: 'Geração automática de certificados em PDF após 100% de conclusão.', priority: 'Média' },
+        { id: 'RF09', type: 'RF', title: 'Fórum/Interação', desc: 'Espaço para comentários e dúvidas em cada aula ou módulo.', priority: 'Baixa' },
+        { id: 'RNF01', type: 'RNF', title: 'Responsividade', desc: 'A interface deve ser Mobile-First, adaptável a smartphones e tablets.', priority: 'Alta' },
+        { id: 'RNF02', type: 'RNF', title: 'Segurança', desc: 'Criptografia de senhas (BCrypt) e proteção contra ataques CSRF e XSS.', priority: 'Alta' },
+        { id: 'RNF03', type: 'RNF', title: 'Performance', desc: 'Otimização de consultas para carregamento de aulas em menos de 2 segundos.', priority: 'Alta' },
+        { id: 'RNF04', type: 'RNF', title: 'Escalabilidade', desc: 'Arquitetura preparada para suportar múltiplos acessos simultâneos.', priority: 'Alta' }
+    ];
+
+    const flowsData = {
+        professor: [
+            { id: 'p1', label: '1. Início', title: 'Painel do Professor', desc: 'O professor acede ao seu painel de instrutor para iniciar a criação.', icon: '&#128188;' },
+            { id: 'p2', label: '2. Criar Curso', title: 'Definições Base', desc: 'O instrutor define o Título, adiciona uma imagem de Capa e escreve a Descrição do novo curso.', icon: '&#128221;' },
+            { id: 'p3', label: '3. Estruturação', title: 'Adicionar Módulos e Aulas', desc: 'Criação da estrutura modular do curso. Para cada módulo, são adicionadas aulas.', icon: '&#128194;' },
+            { id: 'p4', label: '4. Conteúdo', title: 'Inserção de Material', desc: 'O professor escolhe o tipo: Inserir link de Vídeo (YouTube/Vimeo), Upload de PDF/Docs, ou escrever Texto direto no editor.', icon: '&#128250;' },
+            { id: 'p5', label: '5. Publicação', title: 'Revisão e Disponibilização', desc: 'Após adicionar todas as aulas, o curso é revisto e publicado, ficando disponível para matrículas de alunos.', icon: '&#128640;' }
+        ],
+        aluno: [
+            { id: 'a1', label: '1. Acesso', title: 'Navegação para a Aula', desc: 'O aluno acede à Sala de Aula Virtual e abre a "Aula X". O sistema verifica a matrícula ativa.', icon: '&#128187;' },
+            { id: 'a2', label: '2. Consumo', title: 'Visualização de Mídia', desc: 'O sistema procura o conteúdo na base de dados e exibe a interface com o Vídeo ou PDF.', icon: '&#128214;' },
+            { id: 'a3', label: '3. Registo', title: 'Marcação de Conclusão', desc: 'O aluno clica em "Marcar como Concluída". O sistema atualiza o progresso na tabela Enrollment.', icon: '&#10004;' },
+            { id: 'a4', label: '4. Verificação', title: 'Cálculo de Progresso', desc: 'O sistema verifica se todas as aulas do curso foram concluídas (Progresso = 100%).', icon: '&#128269;' },
+            { id: 'a5', label: '5. Resultado', title: 'Certificação ou Continuação', desc: 'Se for a última aula: Notifica e gera Certificado PDF. Caso contrário, liberta o acesso à próxima aula.', icon: '&#127891;' }
+        ]
+    };
+
+    const businessRules = [
+        { id: 'RN01', title: 'Acesso Restrito', desc: 'O conteúdo é visível apenas para utilizadores com matrícula ativa.' },
+        { id: 'RN02', title: 'Integridade do Progresso', desc: 'Uma aula concluída não retrocede automaticamente.' },
+        { id: 'RN03', title: 'Certificação', desc: 'Certificado emitido apenas se o progresso for igual a 100%.' },
+        { id: 'RN04', title: 'Permissões de Edição', desc: 'Apenas o autor ou o Administrador podem alterar materiais.' }
+    ];
+
+    let currentFilter = null;
+    let chartInstance = null;
+
+    function renderRequirementsList(filterPriority = null) {
+        const listContainer = document.getElementById('requirementsList');
+        const countContainer = document.getElementById('reqCount');
+        const resetBtn = document.getElementById('resetFilterBtn');
+        const helpText = document.getElementById('chartHelpText');
+        
+        listContainer.innerHTML = '';
+        
+        const filteredData = filterPriority 
+            ? requirementsData.filter(r => r.priority === filterPriority)
+            : requirementsData;
+
+        countContainer.textContent = `${filteredData.length} Requisitos`;
+
+        if (filterPriority) {
+            resetBtn.classList.remove('hidden');
+            helpText.innerHTML = `Mostrando requisitos com prioridade: <strong>${filterPriority}</strong>`;
+        } else {
+            resetBtn.classList.add('hidden');
+            helpText.innerHTML = `Clique numa secção do gráfico para filtrar a lista ao lado.`;
+        }
+
+        const priorityColors = {
+            'Alta': 'bg-rose-100 text-rose-700 border-rose-200',
+            'Média': 'bg-amber-100 text-amber-700 border-amber-200',
+            'Baixa': 'bg-emerald-100 text-emerald-700 border-emerald-200'
+        };
+
+        filteredData.forEach(req => {
+            const el = document.createElement('div');
+            el.className = 'mb-4 p-4 rounded-lg border border-slate-200 bg-white shadow-sm hover:border-blue-300 transition-colors';
+            el.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">${req.id}</span>
+                        <h4 class="font-bold text-slate-800">${req.title}</h4>
+                    </div>
+                    <span class="text-xs font-semibold px-2 py-1 rounded border ${priorityColors[req.priority]}">${req.priority}</span>
+                </div>
+                <p class="text-sm text-slate-600">${req.desc}</p>
+            `;
+            listContainer.appendChild(el);
+        });
+    }
+
+    function initChart() {
+        const counts = { 'Alta': 0, 'Média': 0, 'Baixa': 0 };
+        requirementsData.forEach(r => counts[r.priority]++);
+
+        const ctx = document.getElementById('requirementsChart').getContext('2d');
+        
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Alta', 'Média', 'Baixa'],
+                datasets: [{
+                    data: [counts['Alta'], counts['Média'], counts['Baixa']],
+                    backgroundColor: ['#f43f5e', '#f59e0b', '#10b981'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.label}: ${context.raw} Requisitos`;
+                            }
+                        }
+                    }
+                },
+                onClick: (e, elements) => {
+                    if (elements && elements.length > 0) {
+                        const idx = elements[0].index;
+                        const label = chartInstance.data.labels[idx];
+                        currentFilter = label;
+                        renderRequirementsList(currentFilter);
+                    }
+                }
+            }
+        });
+    }
+
+    document.getElementById('resetFilterBtn').addEventListener('click', () => {
+        currentFilter = null;
+        renderRequirementsList();
+    });
+
+    let currentFlowType = 'professor';
+
+    function renderFlow(type) {
+        const stepsContainer = document.getElementById('flowStepsContainer');
+        const detailContainer = document.getElementById('flowDetailContainer');
+        const data = flowsData[type];
+        
+        stepsContainer.innerHTML = '';
+        
+        data.forEach((step, index) => {
+            const btn = document.createElement('button');
+            btn.className = `w-full text-left pl-4 py-3 border-l-4 transition-all duration-200 ${index === 0 ? 'step-active border-blue-600 text-blue-700' : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'}`;
+            btn.innerHTML = `<span class="font-bold mr-2">${step.label}</span>`;
+            
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#flowStepsContainer button').forEach(b => {
+                    b.classList.remove('step-active', 'border-blue-600', 'text-blue-700');
+                    b.classList.add('border-slate-200', 'text-slate-500');
+                });
+                btn.classList.remove('border-slate-200', 'text-slate-500');
+                btn.classList.add('step-active', 'border-blue-600', 'text-blue-700');
+                showFlowDetail(step);
+            });
+            
+            stepsContainer.appendChild(btn);
+        });
+
+        showFlowDetail(data[0]);
+    }
+
+    function showFlowDetail(step) {
+        const container = document.getElementById('flowDetailContainer');
+        container.innerHTML = `
+            <div class="text-6xl mb-6 text-blue-500">${step.icon}</div>
+            <h3 class="text-2xl font-bold text-slate-800 mb-4">${step.title}</h3>
+            <p class="text-lg text-slate-600 leading-relaxed">${step.desc}</p>
+        `;
+    }
+
+    function renderBusinessRules() {
+        const container = document.getElementById('businessRulesContainer');
+        businessRules.forEach(rule => {
+            container.innerHTML += `
+                <div class="bg-slate-700 p-4 rounded text-sm border-l-4 border-blue-400">
+                    <strong class="text-white block mb-1">${rule.id} - ${rule.title}</strong>
+                    <span class="text-slate-300">${rule.desc}</span>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById('tab-prof').addEventListener('click', (e) => {
+        e.target.classList.add('text-blue-600', 'border-blue-600', 'bg-blue-50/30');
+        e.target.classList.remove('text-slate-500', 'border-transparent');
+        
+        const otherTab = document.getElementById('tab-aluno');
+        otherTab.classList.remove('text-blue-600', 'border-blue-600', 'bg-blue-50/30');
+        otherTab.classList.add('text-slate-500', 'border-transparent');
+        
+        renderFlow('professor');
+    });
+
+    document.getElementById('tab-aluno').addEventListener('click', (e) => {
+        e.target.classList.add('text-blue-600', 'border-blue-600', 'bg-blue-50/30');
+        e.target.classList.remove('text-slate-500', 'border-transparent');
+        
+        const otherTab = document.getElementById('tab-prof');
+        otherTab.classList.remove('text-blue-600', 'border-blue-600', 'bg-blue-50/30');
+        otherTab.classList.add('text-slate-500', 'border-transparent');
+        
+        renderFlow('aluno');
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        renderRequirementsList();
+        initChart();
+        renderFlow('professor');
+        renderBusinessRules();
+    });
+
+</script>
+</body>
+</html>
